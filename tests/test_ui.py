@@ -111,9 +111,8 @@ class TestChartColors:
 
                     # At least one RGB component should differ by 20+ (out of 255)
                     max_diff = max(abs(c1 - c2) for c1, c2 in zip(rgb1, rgb2))
-                    assert (
-                        max_diff >= 20
-                    ), f"Colors too similar: {color} vs {other_color}"
+                    error_message = f"Colors too similar: {color} vs {other_color}"
+                    assert max_diff >= 20, error_message
 
 
 class TestChartLayout:
@@ -693,7 +692,6 @@ class TestCPUGraphApp:
                     "cpu_monitor.ui.main_window.ChartRenderer",
                     return_value=mock_renderer,
                 ):
-
                     app._create_ui_components()
 
                     # Should call all sub-methods
