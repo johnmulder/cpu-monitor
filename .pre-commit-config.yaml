@@ -1,7 +1,7 @@
 repos:
   # General hooks for file formatting and common issues
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
         description: Trim trailing whitespace
@@ -38,7 +38,7 @@ repos:
         args: ['--line-length=88']
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
+    rev: 7.0.0
     hooks:
       - id: isort
         description: Sort Python imports with isort
