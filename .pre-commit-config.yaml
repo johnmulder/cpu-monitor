@@ -1,7 +1,7 @@
 repos:
   # General hooks for file formatting and common issues
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v4.6.0
     hooks:
       - id: trailing-whitespace
         description: Trim trailing whitespace
@@ -38,14 +38,14 @@ repos:
         args: ['--line-length=88']
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.13.3
+    rev: 5.13.2
     hooks:
       - id: isort
         description: Sort Python imports with isort
         args: ['--profile', 'black', '--line-length=88']
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.7.4
+    rev: v0.6.9
     hooks:
       - id: ruff
         description: Run ruff linter
@@ -55,7 +55,7 @@ repos:
 
   # Python type checking
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.13.0
+    rev: v1.11.2
     hooks:
       - id: mypy
         description: Run mypy type checker
@@ -65,7 +65,7 @@ repos:
 
   # Markdown and documentation formatting
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.42.0
+    rev: v0.41.0
     hooks:
       - id: markdownlint
         description: Lint Markdown files
