@@ -120,17 +120,15 @@ class TestCPUReader:
         assert data.core_count == 4
         assert data.has_per_core_data is True
 
-    @patch("builtins.__import__")
     @patch("sys.platform", "linux")
-    def test_get_cpu_data_with_proc_stat(self, mock_import, mock_proc_stat_content):
+    def test_get_cpu_data_with_proc_stat(self, mock_proc_stat_content):
         """Test get_cpu_data with /proc/stat fallback."""
-        # Mock psutil import failure
-        mock_import.side_effect = ImportError("No module named psutil")
-
         # Use context manager to ensure mock is active during initialization
         with patch(
             "cpu_monitor.core.cpu_reader.CPUReader._safe_read_proc_stat"
-        ) as mock_safe_read:
+        ) as mock_safe_read, patch(
+            "cpu_monitor.core.cpu_reader.CPUReader._try_initialize_psutil", return_value=False
+        ):
             mock_safe_read.return_value = mock_proc_stat_content
             reader = CPUReader()
             data = reader.get_cpu_data()
