@@ -10,8 +10,7 @@ authors = [
 ]
 description = "A modular CPU utilization monitoring application with layered architecture"
 readme = "README.md"
-license = "MIT"
-license-files = ["LICENSE"]
+license = {text = "MIT"}
 requires-python = ">=3.8"
 keywords = [
     "cpu", "monitoring", "utilization", "system", "performance",
@@ -21,7 +20,6 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
