@@ -90,11 +90,11 @@ class CPUReader:
 
     def get_core_count(self) -> int:
         """Get the number of logical CPU cores."""
-        return (
-            int(self.psutil.cpu_count(logical=True))
-            if self._use_psutil
-            else self._count_cores_from_proc_stat()
-        )
+        if self._use_psutil:
+            core_count = self.psutil.cpu_count(logical=True)
+            return int(core_count) if core_count is not None else 0
+        else:
+            return self._count_cores_from_proc_stat()
 
     def _get_psutil_percent(self) -> float:
         """Get CPU percentage using psutil (non-blocking)."""
