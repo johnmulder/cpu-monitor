@@ -11,7 +11,7 @@ Real-time CPU usage monitor with per-core charts and an interactive Tkinter inte
 
 - **Live Updates**: Configurable intervals (100 ms–10 s) and history (10 s–1 h)
 - **Per-Core View**: Auto-detects all cores; color-coded visualization with legend
-- **Interactive UI**: Dark theme, pause/clear/toggle controls, smooth charts with fill
+- **Interactive UI**: Dark theme, pause/clear/toggle controls, smooth charts
 - **Cross-Platform**: Works on macOS, Linux, and Windows via psutil
 - **Robust Fallback**: Uses `/proc/stat` on Linux when psutil unavailable
 
@@ -125,4 +125,5 @@ mypy src/
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License -
+see the [LICENSE](LICENSE) file for details.
