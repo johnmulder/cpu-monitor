@@ -127,7 +127,8 @@ class TestCPUReader:
         with patch(
             "cpu_monitor.core.cpu_reader.CPUReader._safe_read_proc_stat"
         ) as mock_safe_read, patch(
-            "cpu_monitor.core.cpu_reader.CPUReader._try_initialize_psutil", return_value=False
+            "cpu_monitor.core.cpu_reader.CPUReader._try_initialize_psutil",
+            return_value=False,
         ):
             mock_safe_read.return_value = mock_proc_stat_content
             reader = CPUReader()
