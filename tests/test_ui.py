@@ -626,14 +626,14 @@ class TestCPUGraphApp:
         with patch("cpu_monitor.ui.main_window.CPUReader"):
             with patch("tkinter.Tk.__init__", return_value=None):
                 app = CPUGraphApp.__new__(CPUGraphApp)
-                
+
                 # Mock UI components
                 mock_parent = Mock()
                 mock_canvas = Mock()
-                
+
                 with patch("tkinter.Canvas", return_value=mock_canvas):
                     app._create_canvas(mock_parent)
-                    
+
                     assert app.canvas == mock_canvas
                     mock_canvas.grid.assert_called_once()
 
@@ -642,13 +642,13 @@ class TestCPUGraphApp:
         with patch("cpu_monitor.ui.main_window.CPUReader"):
             with patch("tkinter.Tk.__init__", return_value=None):
                 app = CPUGraphApp.__new__(CPUGraphApp)
-                
+
                 mock_parent = Mock()
                 mock_label = Mock()
-                
+
                 with patch("tkinter.Label", return_value=mock_label):
                     app._create_status_label(mock_parent)
-                    
+
                     assert app.status_label == mock_label
                     mock_label.grid.assert_called_once()
 
@@ -658,13 +658,13 @@ class TestCPUGraphApp:
             with patch("tkinter.Tk.__init__", return_value=None):
                 app = CPUGraphApp.__new__(CPUGraphApp)
                 app.show_per_core = False
-                
+
                 mock_parent = Mock()
                 mock_button = Mock()
-                
+
                 with patch("tkinter.Button", return_value=mock_button):
                     app._create_control_buttons(mock_parent)
-                    
+
                     # Should have created buttons and stored references
                     assert app.pause_button == mock_button
                     assert app.view_button == mock_button
@@ -676,29 +676,29 @@ class TestCPUGraphApp:
         with patch("cpu_monitor.ui.main_window.CPUReader"):
             with patch("tkinter.Tk.__init__", return_value=None):
                 app = CPUGraphApp.__new__(CPUGraphApp)
-                
+
                 # Mock all the sub-methods
                 app._create_canvas = Mock()
                 app._create_status_label = Mock()
                 app._create_control_buttons = Mock()
-                
+
                 # Mock canvas attribute needed by ChartRenderer
                 app.canvas = Mock()
-                
+
                 # Mock Frame and ChartRenderer
                 mock_frame = Mock()
                 mock_renderer = Mock()
-                
+
                 with patch("tkinter.Frame", return_value=mock_frame), \
                      patch("cpu_monitor.ui.main_window.ChartRenderer", return_value=mock_renderer):
-                    
+
                     app._create_ui_components()
-                    
+
                     # Should call all sub-methods
                     app._create_canvas.assert_called_once_with(mock_frame)
                     app._create_status_label.assert_called_once_with(mock_frame)
                     app._create_control_buttons.assert_called_once_with(mock_frame)
-                    
+
                     # Should create chart renderer
                     assert app.chart_renderer == mock_renderer
 
@@ -708,16 +708,16 @@ class TestCPUGraphApp:
             mock_reader = Mock()
             mock_reader.get_core_count.return_value = 4
             mock_reader_class.return_value = mock_reader
-            
+
             with patch("tkinter.Tk.__init__", return_value=None):
                 app = CPUGraphApp.__new__(CPUGraphApp)
-                
+
                 # Mock all the initialization methods
                 app._setup_window = Mock()
                 app._create_ui_components = Mock()
                 app._initialize_per_core_data_if_needed = Mock()
                 app._start_update_loop = Mock()
-                
+
                 # Call init manually
                 CPUGraphApp.__init__(
                     app,
@@ -726,12 +726,12 @@ class TestCPUGraphApp:
                     show_per_core=True,
                     max_cores=8
                 )
-                
+
                 # Check initialization
                 assert app.interval_ms == 1000
                 assert app.show_per_core is True
                 assert app.max_cores_display == 8
-                
+
                 # Check that all setup methods were called
                 app._setup_window.assert_called_once()
                 app._create_ui_components.assert_called_once()

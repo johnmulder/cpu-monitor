@@ -368,7 +368,7 @@ class TestCPUReader:
         """Test _get_psutil_percent when psutil raises exception."""
         reader = CPUReader()
         reader._use_psutil = True
-        
+
         # Mock psutil to raise exception
         mock_psutil = Mock()
         mock_psutil.cpu_percent.side_effect = Exception("psutil error")
@@ -397,20 +397,20 @@ class TestCPUReader:
         """Test _get_proc_stat_percent edge cases for better line coverage."""
         reader = CPUReader()
         reader._use_psutil = False
-        
+
         # Test the case where total_delta is exactly 0
         reader._previous_idle = 500
         reader._previous_total = 1000
-        
+
         # Mock same values - this hits the total_delta <= 0 condition
         with patch.object(reader, "_read_proc_stat", return_value=(500, 1000)):
             result = reader._get_proc_stat_percent()
             assert result == 0.0
-            
+
         # Test calculation edge case with valid deltas
         reader._previous_idle = 500
         reader._previous_total = 1000
-        
+
         # Mock values that give a measurable difference
         with patch.object(reader, "_read_proc_stat", return_value=(600, 1200)):
             result = reader._get_proc_stat_percent()
