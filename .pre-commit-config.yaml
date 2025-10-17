@@ -1,0 +1,82 @@
+repos:
+  # General hooks for file formatting and common issues
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+        description: Trim trailing whitespace
+      - id: end-of-file-fixer
+        description: Ensure files end with a newline
+      - id: mixed-line-ending
+        description: Replace or check mixed line endings
+        args: ['--fix=lf']
+      - id: check-merge-conflict
+        description: Check for files that contain merge conflict strings
+      - id: check-yaml
+        description: Check YAML file syntax
+      - id: check-toml
+        description: Check TOML file syntax
+      - id: check-json
+        description: Check JSON file syntax
+      - id: check-added-large-files
+        description: Prevent giant files from being committed
+        args: ['--maxkb=1024']
+      - id: check-case-conflict
+        description: Check for files that would conflict on case-insensitive filesystems
+      - id: check-executables-have-shebangs
+        description: Ensure that (non-binary) executables have a shebang
+      - id: check-shebang-scripts-are-executable
+        description: Ensure that (non-binary) files with a shebang are executable
+
+  # Python-specific hooks
+  - repo: https://github.com/psf/black
+    rev: 24.10.0
+    hooks:
+      - id: black
+        description: Format Python code with black
+        language_version: python3
+        args: ['--line-length=88']
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        description: Sort Python imports with isort
+        args: ['--profile', 'black', '--line-length=88']
+
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.7.4
+    hooks:
+      - id: ruff
+        description: Run ruff linter
+        args: ['--fix', '--exit-non-zero-on-fix']
+      - id: ruff-format
+        description: Run ruff formatter
+
+  # Python type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.13.0
+    hooks:
+      - id: mypy
+        description: Run mypy type checker
+        additional_dependencies: [types-requests, types-setuptools]
+        args: ['--ignore-missing-imports', '--install-types', '--non-interactive']
+        exclude: ^tests/
+
+  # Markdown and documentation formatting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.42.0
+    hooks:
+      - id: markdownlint
+        description: Lint Markdown files
+        args: ['--fix']
+        exclude: ^CHANGELOG\.md$
+
+  # Security scanning
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.10
+    hooks:
+      - id: bandit
+        description: Run bandit security linter
+        args: ['-r', 'src/', '-f', 'json', '-o', 'bandit-report.json']
+        pass_filenames: false

@@ -1,0 +1,32 @@
+# Include package metadata and documentation
+include README.md
+include LICENSE
+include pyproject.toml
+include requirements.txt
+
+# Include test data (if any)
+recursive-include tests *.py
+recursive-include tests *.json
+recursive-include tests *.yaml
+recursive-include tests *.yml
+
+# Include documentation
+recursive-include docs *.md
+recursive-include docs *.rst
+recursive-include docs *.txt
+
+# Exclude build artifacts and cache
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.pyd
+global-exclude __pycache__
+global-exclude .pytest_cache
+global-exclude .coverage
+global-exclude htmlcov
+global-exclude .tox
+global-exclude .venv
+global-exclude .env
+global-exclude .git*
+global-exclude *.egg-info
+global-exclude build
+global-exclude dist
