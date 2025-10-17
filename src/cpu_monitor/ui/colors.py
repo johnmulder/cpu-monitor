@@ -8,7 +8,8 @@ Centralizes visual styling constants for consistent theming.
 class ChartColors:
     """Color scheme for the CPU utilization chart.
 
-    Provides a dark theme optimized for readability with distinct colors for multi-core visualization.
+    Provides a dark theme optimized for readability with distinct colors
+    for multi-core visualization.
     """
 
     BACKGROUND = "#0f1115"

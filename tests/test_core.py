@@ -122,17 +122,16 @@ class TestCPUReader:
 
     @patch("builtins.__import__")
     @patch("sys.platform", "linux")
-    def test_get_cpu_data_with_proc_stat(
-        self, mock_import, mock_proc_stat_content
-    ):
+    def test_get_cpu_data_with_proc_stat(self, mock_import, mock_proc_stat_content):
         """Test get_cpu_data with /proc/stat fallback."""
         # Mock psutil import failure
         mock_import.side_effect = ImportError("No module named psutil")
 
         # Use context manager to ensure mock is active during initialization
-        with patch("cpu_monitor.core.cpu_reader.CPUReader._safe_read_proc_stat") as mock_safe_read:
+        with patch(
+            "cpu_monitor.core.cpu_reader.CPUReader._safe_read_proc_stat"
+        ) as mock_safe_read:
             mock_safe_read.return_value = mock_proc_stat_content
-            
             reader = CPUReader()
             data = reader.get_cpu_data()
 
@@ -375,19 +374,21 @@ class TestCPUReader:
         # The exception should NOT be raised by percent() method directly
         # Instead, percent() catches it and should cause no error
         try:
-            result = reader.percent()
+            reader.percent()
             # If no exception, that's also acceptable behavior
-        except Exception:
+        except CPUReaderError:
             # If an exception is raised, it should be a CPUReaderError
-            with pytest.raises(Exception):
+            with pytest.raises(CPUReaderError):
                 reader.percent()
 
     def test_count_cores_fallback_with_safe_read_error(self):
-        """Test _count_cores_from_proc_stat when _safe_read_proc_stat raises CPUReaderError."""
+        """Test _count_cores_from_proc_stat when _safe_read_proc_stat raises error."""
         reader = CPUReader()
 
         # Mock _safe_read_proc_stat to raise CPUReaderError
-        with patch.object(reader, "_safe_read_proc_stat", side_effect=CPUReaderError("Read failed")):
+        with patch.object(
+            reader, "_safe_read_proc_stat", side_effect=CPUReaderError("Read failed")
+        ):
             result = reader._count_cores_from_proc_stat()
             assert result == 0  # Should return 0 when read fails
 

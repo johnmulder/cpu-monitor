@@ -41,7 +41,7 @@ class TestAppConfig:
         assert config.max_cores_display == 8
 
     def test_immutable_after_creation(self):
-        """Test that AppConfig fields can be modified (dataclass is mutable by default)."""
+        """Test that AppConfig fields can be modified (dataclass is mutable)."""
         config = AppConfig()
 
         # Dataclass allows modification by default

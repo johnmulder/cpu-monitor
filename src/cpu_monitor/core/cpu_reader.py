@@ -1,7 +1,8 @@
 """
 CPU monitoring and data collection system.
 
-Provides cross-platform CPU usage monitoring with automatic fallback from psutil to Linux /proc/stat.
+Provides cross-platform CPU usage monitoring with automatic fallback
+from psutil to Linux /proc/stat.
 """
 
 import sys
@@ -97,7 +98,12 @@ class CPUReader:
 
     def _get_psutil_percent(self) -> float:
         """Get CPU percentage using psutil (non-blocking)."""
-        return float(self.psutil.cpu_percent(interval=None))
+        try:
+            return float(self.psutil.cpu_percent(interval=None))
+        except Exception as e:
+            raise CPUReaderError(
+                f"Failed to get CPU percentage using psutil: {e}"
+            ) from e
 
     def _get_psutil_cpu_data(self) -> CPUCoreData:
         """Get comprehensive CPU data using psutil."""
@@ -119,7 +125,7 @@ class CPUReader:
         try:
             proc_stat_path = Path(self.PROC_STAT_PATH)
             return proc_stat_path.read_text(encoding="utf-8")
-        except (OSError, IOError, UnicodeDecodeError) as e:
+        except (OSError, UnicodeDecodeError) as e:
             raise CPUReaderError(f"Failed to read {self.PROC_STAT_PATH}: {e}") from e
 
     def _count_cores_from_proc_stat(self) -> int:

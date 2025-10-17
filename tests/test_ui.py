@@ -2,7 +2,7 @@
 
 import tkinter as tk
 from collections import deque
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -689,8 +689,10 @@ class TestCPUGraphApp:
                 mock_frame = Mock()
                 mock_renderer = Mock()
 
-                with patch("tkinter.Frame", return_value=mock_frame), \
-                     patch("cpu_monitor.ui.main_window.ChartRenderer", return_value=mock_renderer):
+                with patch("tkinter.Frame", return_value=mock_frame), patch(
+                    "cpu_monitor.ui.main_window.ChartRenderer",
+                    return_value=mock_renderer,
+                ):
 
                     app._create_ui_components()
 
@@ -724,7 +726,7 @@ class TestCPUGraphApp:
                     interval_ms=1000,
                     history_secs=120,
                     show_per_core=True,
-                    max_cores=8
+                    max_cores=8,
                 )
 
                 # Check initialization

@@ -1,7 +1,8 @@
 """
 Main application window and user interface controller.
 
-Coordinates between CPU monitoring core and chart rendering to provide a complete interactive application.
+Coordinates between CPU monitoring core and chart rendering to provide
+a complete interactive application.
 """
 
 import time

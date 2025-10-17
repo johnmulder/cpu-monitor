@@ -19,7 +19,7 @@ def parse_arguments() -> AppConfig:
         SystemExit: If arguments are invalid or help is requested
     """
     parser = argparse.ArgumentParser(
-        description="Real-time CPU utilization monitor with interactive graphical display",
+        description="Real-time CPU utilization monitor with interactive display",
         epilog="Examples:\n"
         "  %(prog)s --per-core                    # Show all CPU cores\n"
         "  %(prog)s --max-cores 4 --per-core     # Show first 4 cores\n"

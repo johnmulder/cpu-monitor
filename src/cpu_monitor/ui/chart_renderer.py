@@ -1,7 +1,8 @@
 """
 Chart rendering system for CPU utilization visualization.
 
-Handles drawing operations for overall system CPU usage and per-core monitoring with interactive legends.
+Handles drawing operations for overall system CPU usage and per-core monitoring
+with interactive legends.
 """
 
 import tkinter as tk
@@ -13,7 +14,8 @@ from .colors import ChartColors, ChartLayout
 class ChartRenderer:
     """Professional chart rendering for CPU utilization data.
 
-    Supports overall CPU usage (single line with fill) and per-core usage (multiple colored lines with legend).
+    Supports overall CPU usage (single line with fill) and per-core usage
+    (multiple colored lines with legend).
     """
 
     def __init__(self, canvas: tk.Canvas, width: int, height: int):
