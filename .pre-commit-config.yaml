@@ -50,8 +50,6 @@ repos:
       - id: ruff
         description: Run ruff linter
         args: ['--fix', '--exit-non-zero-on-fix']
-      - id: ruff-format
-        description: Run ruff formatter
 
   # Python type checking
   - repo: https://github.com/pre-commit/mirrors-mypy
