@@ -35,7 +35,8 @@
 
 - Include file path and line number when possible
 - Suggest specific fixes: "Add 'title' field to front matter"
-- Use consistent format: "Error in content/posts/my-post.md: Missing required field 'date'"
+- Use consistent format: "Error in content/posts/my-post.md: Missing required
+  field 'date'"
 
 ## Coding Standards
 
@@ -43,16 +44,20 @@
 
 Code should invite understanding.\
 Good software is not just functional -- it is *legible thought*.\
-Generate and refactor Python code as though explaining an idea to a future collaborator of good will and limited time.
+Generate and refactor Python code as though explaining an idea to a future
+collaborator of good will and limited time.
 
 ### 1. AI Behavior Preamble
 
 When writing or refactoring code:
 
-- **Primary Objective:** produce Python that is *clear, minimal, and conceptually deep*.
+- **Primary Objective:** produce Python that is *clear, minimal, and
+  conceptually deep*.
 - **Prioritize** long-term readability over short-term cleverness.
-- **Avoid** over-generalization, "Clean Code fragmentation," or needless patterns.
-- **Balance** explicitness with rhythm -- the code should read naturally in Python's idiom.
+- **Avoid** over-generalization, "Clean Code fragmentation," or needless
+  patterns.
+- **Balance** explicitness with rhythm -- the code should read naturally in
+  Python's idiom.
 - When rules conflict, follow this hierarchy:
   1. **Clarity of intent**
   1. **Simplicity of structure**
@@ -62,23 +67,28 @@ When writing or refactoring code:
 ### 2. Structural Rules
 
 - Each module should embody a *single, coherent idea*.
-- Prefer **deep modules** (simple interface, rich implementation) over thin wrappers.
-- **Hide complexity, not meaning** -- interfaces should name the problem domain, not internal mechanics.
+- Prefer **deep modules** (simple interface, rich implementation) over thin
+  wrappers.
+- **Hide complexity, not meaning** -- interfaces should name the problem
+  domain, not internal mechanics.
 - Avoid "manager," "util," or "helper" suffixes; express intent.
 - Let architecture *emerge* through iteration, not anticipation.
 
 ### 3. Functions and Classes
 
-- Keep functions short but **complete in thought**; don't explode logic into fragments.
+- Keep functions short but **complete in thought**; don't explode logic into
+  fragments.
 - Function names are **verbs**; class names are **nouns**.
 - Classes should clarify boundaries, not multiply them.
-- Use `@dataclass` for simple data aggregates; no inheritance unless it pays for itself.
+- Use `@dataclass` for simple data aggregates; no inheritance unless it pays
+  for itself.
 - Favor composition over hierarchy.
 
 ### 4. Pythonic Practices
 
 - Follow **PEP 8**, but value **clarity over conformance**.
-- **Use pure ASCII** in code and documentation when possible - avoid Unicode symbols, fancy quotes, em-dashes, etc.
+- **Use pure ASCII** in code and documentation when possible - avoid Unicode
+  symbols, fancy quotes, em-dashes, etc.
 - Prefer:
   - `with` for resource handling
   - f-strings for formatting
@@ -93,7 +103,8 @@ When writing or refactoring code:
 - Inline comments explain *why this is hard*, not *what this does*.
 - If a comment paraphrases the code, delete it.
 - If a comment captures reasoning, preserve it.
-- **Character encoding**: Use pure ASCII characters in code, comments, and documentation when possible. Replace Unicode symbols with ASCII equivalents:
+- **Character encoding**: Use pure ASCII characters in code, comments, and
+  documentation when possible. Replace Unicode symbols with ASCII equivalents:
   - Use `->` instead of `->`
   - Use `--` instead of `--` (em-dash)
   - Use regular quotes `"` instead of smart quotes `""`
