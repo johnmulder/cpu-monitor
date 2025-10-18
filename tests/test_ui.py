@@ -549,19 +549,19 @@ class TestCPUGraphApp:
                 )
                 app._update_status_display = Mock()
                 app._refresh_chart = Mock()
-                app.after = Mock()  # Mock the Tkinter after method
 
-                app._update_loop()
+                with patch.object(app, "after") as mock_after:
+                    app._update_loop()
 
-                # Check that data was added
-                assert app.data[-1] == 45.0
-                assert app.per_core_data[0][-1] == 25.0
-                assert app.per_core_data[1][-1] == 35.0
+                    # Check that data was added
+                    assert app.data[-1] == 45.0
+                    assert app.per_core_data[0][-1] == 25.0
+                    assert app.per_core_data[1][-1] == 35.0
 
-                app._calculate_statistics.assert_called_once()
-                app._update_status_display.assert_called_once()
-                app._refresh_chart.assert_called_once()
-                app.after.assert_called_once_with(500, app._update_loop)
+                    app._calculate_statistics.assert_called_once()
+                    app._update_status_display.assert_called_once()
+                    app._refresh_chart.assert_called_once()
+                    mock_after.assert_called_once_with(500, app._update_loop)
 
     def test_update_loop_paused(self):
         """Test update loop when paused."""
@@ -570,14 +570,14 @@ class TestCPUGraphApp:
                 app = CPUGraphApp.__new__(CPUGraphApp)
                 app.is_paused = True
                 app.cpu_reader = Mock()
-                app.after = Mock()
                 app.interval_ms = 500
 
-                app._update_loop()
+                with patch.object(app, "after") as mock_after:
+                    app._update_loop()
 
-                # Should not call CPU reader when paused
-                app.cpu_reader.get_cpu_data.assert_not_called()
-                app.after.assert_called_once_with(500, app._update_loop)
+                    # Should not call CPU reader when paused
+                    app.cpu_reader.get_cpu_data.assert_not_called()
+                    mock_after.assert_called_once_with(500, app._update_loop)
 
     def test_update_loop_error_handling(self):
         """Test update loop error handling."""
@@ -588,13 +588,13 @@ class TestCPUGraphApp:
                 app.cpu_reader = Mock()
                 app.cpu_reader.get_cpu_data.side_effect = RuntimeError("CPU read error")
                 app._handle_update_error = Mock()
-                app.after = Mock()
                 app.interval_ms = 1000
 
-                app._update_loop()
+                with patch.object(app, "after") as mock_after:
+                    app._update_loop()
 
-                app._handle_update_error.assert_called_once()
-                app.after.assert_called_once_with(1000, app._update_loop)
+                    app._handle_update_error.assert_called_once()
+                    mock_after.assert_called_once_with(1000, app._update_loop)
 
     def test_setup_window(self):
         """Test window setup."""
@@ -614,11 +614,11 @@ class TestCPUGraphApp:
         with patch("cpu_monitor.ui.main_window.CPUReader"):
             with patch("tkinter.Tk.__init__", return_value=None):
                 app = CPUGraphApp.__new__(CPUGraphApp)
-                app.after = Mock()
 
-                app._start_update_loop()
+                with patch.object(app, "after") as mock_after:
+                    app._start_update_loop()
 
-                app.after.assert_called_once_with(0, app._update_loop)
+                    mock_after.assert_called_once_with(0, app._update_loop)
 
     def test_create_canvas_functionality(self):
         """Test canvas creation with mocked components."""
