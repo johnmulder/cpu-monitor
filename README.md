@@ -15,6 +15,24 @@ Real-time CPU usage monitor with per-core charts and an interactive Tkinter inte
 - **Cross-Platform**: Works on macOS, Linux, and Windows via psutil
 - **Robust Fallback**: Uses `/proc/stat` on Linux when psutil unavailable
 
+## Screenshots
+
+### Overall CPU Usage View
+
+The default view shows system-wide CPU utilization with a smooth line chart and
+filled area visualization. The interface includes real-time statistics and
+interactive controls for pausing, clearing data, and switching views.
+
+![Overall CPU Usage](docs/images/cpu-monitor-overall.png)
+
+### Per-Core CPU Usage View
+
+Switch to per-core view to monitor individual CPU cores with color-coded lines
+and a comprehensive legend. Perfect for identifying load distribution and
+performance bottlenecks across multiple cores.
+
+![Per-Core CPU Usage](docs/images/cpu-monitor-per-core.png)
+
 ## Quick Start
 
 ### Installation
