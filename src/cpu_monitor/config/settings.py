@@ -17,7 +17,7 @@ class AppConfig:
     interval_ms: int = 500
     history_secs: int = 60
     canvas_width: int = 900
-    canvas_height: int = 320
+    canvas_height: int = 345
     show_per_core: bool = False
     max_cores_display: int = 0  # 0 = show all cores
 
@@ -26,7 +26,7 @@ class AppConfig:
 class UIConfig:
     """UI configuration constants."""
 
-    DEFAULT_CANVAS_SIZE = (900, 320)
+    DEFAULT_CANVAS_SIZE = (900, 345)
     WINDOW_TITLE = "CPU Utilization Monitor"
     INITIAL_STATUS_MESSAGE = "Initializing CPU monitor..."
 

@@ -24,27 +24,30 @@ Real-time CPU usage monitor with per-core charts and an interactive Tkinter inte
 git clone https://github.com/johnmulder/cpu-monitor.git
 cd cpu-monitor
 
-# Install dependencies
-pip install psutil
+# Install the package with dependencies
+pip install -e .
+
+# Or install with development dependencies
+pip install -e .[dev]
 
 # Run the application
-python -m src.cpu_monitor.main
+cpu-monitor
 ```
 
 ### Usage Examples
 
 ```bash
 # Basic usage - overall CPU view
-python -m src.cpu_monitor.main
+cpu-monitor
 
 # Per-core view with fast updates
-python -m src.cpu_monitor.main --per-core --interval 250
+cpu-monitor --per-core --interval 250
 
 # Limit to first 4 cores with extended history
-python -m src.cpu_monitor.main --per-core --max-cores 4 --time-window 120
+cpu-monitor --per-core --max-cores 4 --time-window 120
 
 # Custom window size
-python -m src.cpu_monitor.main --width 1200 --height 600
+cpu-monitor --width 1200 --height 600
 ```
 
 ## Installation from Source
@@ -62,17 +65,6 @@ pytest
 pytest --cov=src --cov-report=html
 ```
 
-## Project Layout
-
-```text
-src/cpu_monitor/
-├── cli/           # Command line argument parsing
-├── config/        # Application configuration
-├── core/          # CPU monitoring business logic
-├── ui/            # User interface and visualization
-└── main.py        # Application entry point
-```
-
 ## Testing
 
 ```bash
@@ -85,6 +77,93 @@ pytest --cov=src --cov-report=html
 # Run specific test categories
 pytest -m unit      # Unit tests only
 pytest -m integration  # Integration tests only
+```
+
+## Pre-commit Hooks
+
+This project uses pre-commit hooks to ensure code quality and consistency.
+The hooks include code formatting, linting, type checking, and security scanning.
+
+### Setup
+
+```bash
+# Install development dependencies (includes pre-commit)
+pip install -e .[dev]
+
+# Install pre-commit hooks
+pre-commit install
+
+# Install commit message hooks (optional)
+pre-commit install --hook-type commit-msg
+```
+
+### Running Hooks
+
+```bash
+# Run all hooks on all files
+pre-commit run --all-files
+
+# Run all hooks on staged files only
+pre-commit run
+
+# Run specific hooks
+pre-commit run black           # Format code with black
+pre-commit run ruff            # Run ruff linter
+pre-commit run mypy            # Type checking
+pre-commit run bandit          # Security scanning
+pre-commit run markdownlint    # Markdown formatting
+
+# Skip hooks for a commit (use sparingly)
+git commit --no-verify -m "commit message"
+```
+
+### Available Hooks
+
+| Hook | Description | Auto-fixes |
+|------|-------------|------------|
+| `black` | Python code formatter | ✅ |
+| `isort` | Import sorter | ✅ |
+| `ruff` | Fast Python linter | ✅ (some rules) |
+| `mypy` | Static type checker | ❌ |
+| `trailing-whitespace` | Remove trailing whitespace | ✅ |
+| `end-of-file-fixer` | Ensure files end with newline | ✅ |
+| `mixed-line-ending` | Fix line endings | ✅ |
+| `check-yaml` | Validate YAML syntax | ❌ |
+| `check-toml` | Validate TOML syntax | ❌ |
+| `check-json` | Validate JSON syntax | ❌ |
+| `check-merge-conflict` | Detect merge conflicts | ❌ |
+| `bandit` | Security vulnerability scanner | ❌ |
+| `check-added-large-files` | Prevent large file commits | ❌ |
+| `markdownlint` | Markdown linter/formatter | ✅ |
+
+### Hook Configuration
+
+Pre-commit configuration is defined in `.pre-commit-config.yaml`. Key settings:
+
+- **Black**: Line length 88, Python 3.8+ compatible
+- **Ruff**: Auto-fix enabled, comprehensive rule set
+- **MyPy**: Ignore missing imports, exclude tests
+- **Bandit**: Security scan with JSON report output
+- **MarkdownLint**: Auto-fix common markdown issues
+
+### Troubleshooting
+
+```bash
+# Update hook versions
+pre-commit autoupdate
+
+# Clear hook cache if issues occur
+pre-commit clean
+
+# Reinstall hooks
+pre-commit uninstall
+pre-commit install
+
+# Run individual tools manually
+black src/ tests/
+ruff check --fix src/ tests/
+mypy src/
+bandit -r src/
 ```
 
 ## Requirements
@@ -101,26 +180,71 @@ pytest -m integration  # Integration tests only
 | `-i, --interval` | Update interval in milliseconds | 500 |
 | `-t, --time-window` | History window in seconds | 60 |
 | `-w, --width` | Canvas width in pixels | 900 |
-| `--height` | Canvas height in pixels | 320 |
+| `--height` | Canvas height in pixels | 345 |
 | `--per-core` | Start in per-core view | False |
 | `--max-cores` | Max cores to display (0=all) | 0 |
 
 ## Development
 
+### Setup Development Environment
+
 ```bash
+# Clone the repository
+git clone https://github.com/johnmulder/cpu-monitor.git
+cd cpu-monitor
+
 # Install development dependencies
 pip install -e .[dev]
 
-# Run pre-commit hooks
+# Install pre-commit hooks
 pre-commit install
+```
+
+### Code Quality Tools
+
+```bash
+# Run all pre-commit hooks
 pre-commit run --all-files
 
 # Code formatting
 black src/ tests/
+isort src/ tests/
+
+# Linting
 ruff check src/ tests/
+ruff check --fix src/ tests/  # Auto-fix issues
 
 # Type checking
 mypy src/
+
+# Security scanning
+bandit -r src/
+
+# Run tests with coverage
+pytest --cov=src --cov-report=html
+```
+
+### Project Structure
+
+```text
+src/cpu_monitor/
+├── __init__.py        # Package initialization
+├── main.py           # Application entry point
+├── cli/              # Command line interface
+│   ├── __init__.py
+│   └── argument_parser.py
+├── config/           # Configuration management
+│   ├── __init__.py
+│   └── settings.py
+├── core/             # Core CPU monitoring logic
+│   ├── __init__.py
+│   ├── cpu_reader.py
+│   └── data_models.py
+└── ui/               # User interface components
+    ├── __init__.py
+    ├── chart_renderer.py
+    ├── colors.py
+    └── main_window.py
 ```
 
 ## License

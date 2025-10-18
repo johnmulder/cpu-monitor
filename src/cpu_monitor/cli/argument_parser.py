@@ -57,7 +57,7 @@ def parse_arguments() -> AppConfig:
     parser.add_argument(
         "--height",
         type=int,
-        default=320,
+        default=345,
         metavar="PIXELS",
         help="Canvas height in pixels",
     )

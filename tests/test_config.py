@@ -18,7 +18,7 @@ class TestAppConfig:
         assert config.interval_ms == 500
         assert config.history_secs == 60
         assert config.canvas_width == 900
-        assert config.canvas_height == 320
+        assert config.canvas_height == 345
         assert config.show_per_core is False
         assert config.max_cores_display == 0
 

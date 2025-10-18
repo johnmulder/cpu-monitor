@@ -227,7 +227,7 @@ class ChartRenderer:
         # Calculate layout with row wrapping
         available_width = right - left
         cores_per_row = max(1, available_width // ChartLayout.LEGEND_ITEM_WIDTH)
-        legend_start_y = top + 15
+        legend_start_y = top + 20
 
         for core_index in range(cores_to_show):
             color = ChartColors.get_core_color(core_index)
@@ -275,7 +275,7 @@ class ChartRenderer:
 
         self.canvas.create_text(
             center_x,
-            top - 2,
+            top - 10,
             text=title_text,
             fill=ChartColors.TITLE,
             anchor="s",

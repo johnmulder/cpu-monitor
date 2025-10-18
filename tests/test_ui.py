@@ -161,11 +161,11 @@ class TestChartRenderer:
 
     def test_initialization(self, mock_canvas):
         """Test ChartRenderer initialization."""
-        renderer = ChartRenderer(mock_canvas, width=900, height=320)
+        renderer = ChartRenderer(mock_canvas, width=900, height=345)
 
         assert renderer.canvas == mock_canvas
         assert renderer.width == 900
-        assert renderer.height == 320
+        assert renderer.height == 345
 
     def test_clear_canvas(self, chart_renderer, mock_canvas):
         """Test canvas clearing functionality."""
@@ -254,7 +254,7 @@ class TestChartRendererIntegration:
 
     def test_realistic_chart_rendering(self, mock_canvas):
         """Test rendering with realistic data."""
-        renderer = ChartRenderer(mock_canvas, width=900, height=320)
+        renderer = ChartRenderer(mock_canvas, width=900, height=345)
 
         # Realistic CPU data (2 minutes at 1-second intervals)
         overall_data = [25.0 + (i % 30) * 2.0 for i in range(120)]

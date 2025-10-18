@@ -55,7 +55,7 @@ class ChartLayout:
     Defines spacing, margins, and layout constants for consistent chart appearance.
     """
 
-    MARGINS = {"left": 45, "right": 10, "top": 10, "bottom": 28}
+    MARGINS = {"left": 45, "right": 10, "top": 35, "bottom": 28}
     Y_AXIS_TICKS = (0, 25, 50, 75, 100)
     LEGEND_ITEM_WIDTH = 70  # Pixels per legend item
     LEGEND_ROW_HEIGHT = 15  # Pixels per legend row
