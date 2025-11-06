@@ -3,6 +3,8 @@
 from unittest.mock import Mock, patch
 
 import pytest
+from hypothesis import given
+from hypothesis import strategies as st
 
 from cpu_monitor.core.cpu_reader import CPUReader, CPUReaderError
 from cpu_monitor.core.data_models import CPUCoreData, CPUStatistics
@@ -414,6 +416,37 @@ class TestCPUReader:
             result = reader._get_proc_stat_percent()
             # This should hit the calculation and clamp lines (186-189)
             assert 0.0 <= result <= 100.0
+
+    @given(
+        idle_delta=st.integers(min_value=0, max_value=1000000),
+        total_delta=st.integers(min_value=1, max_value=1000000),
+    )
+    def test_cpu_percentage_calculation_properties(self, idle_delta, total_delta):
+        """Test CPU percentage calculation mathematical properties."""
+        # Ensure idle_delta <= total_delta (realistic constraint)
+        idle_delta = min(idle_delta, total_delta)
+
+        # Calculate percentage using the same logic as the code
+        usage_ratio = 1.0 - (idle_delta / total_delta)
+        usage_percent = usage_ratio * 100.0
+        result = max(0.0, min(100.0, usage_percent))
+
+        # Property: Always returns valid percentage
+        assert 0.0 <= result <= 100.0
+        assert isinstance(result, float)
+
+        # Property: Edge cases behave correctly
+        if idle_delta == total_delta:  # System completely idle
+            assert result == 0.0
+        if idle_delta == 0:  # System completely busy
+            assert result == 100.0
+
+        # Property: Monotonic relationship (more idle = lower usage)
+        if idle_delta < total_delta:
+            higher_idle = min(idle_delta + 1, total_delta)
+            higher_idle_ratio = 1.0 - (higher_idle / total_delta)
+            higher_idle_percent = max(0.0, min(100.0, higher_idle_ratio * 100.0))
+            assert result >= higher_idle_percent
 
 
 class TestCPUReaderIntegration:

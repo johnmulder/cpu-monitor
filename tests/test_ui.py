@@ -5,6 +5,8 @@ from collections import deque
 from unittest.mock import Mock, patch
 
 import pytest
+from hypothesis import given
+from hypothesis import strategies as st
 
 from cpu_monitor.core.data_models import CPUCoreData, CPUStatistics
 from cpu_monitor.ui.chart_renderer import ChartRenderer
@@ -113,6 +115,24 @@ class TestChartColors:
                     max_diff = max(abs(c1 - c2) for c1, c2 in zip(rgb1, rgb2))
                     error_message = f"Colors too similar: {color} vs {other_color}"
                     assert max_diff >= 20, error_message
+
+    @given(st.integers())
+    def test_get_core_color_properties(self, core_index):
+        """Test core color function properties with any integer input."""
+        color = ChartColors.get_core_color(core_index)
+
+        # Property: Always returns a valid hex color from palette
+        assert color in ChartColors.CORE_PALETTE
+        assert color.startswith("#")
+        assert len(color) == 7
+
+        # Property: Same index always returns same color (deterministic)
+        assert ChartColors.get_core_color(core_index) == color
+
+        # Property: Modulo equivalence (key mathematical property)
+        palette_size = len(ChartColors.CORE_PALETTE)
+        equivalent_index = core_index + palette_size
+        assert ChartColors.get_core_color(equivalent_index) == color
 
 
 class TestChartLayout:
@@ -324,6 +344,45 @@ class TestCPUGraphApp:
 
                 result = app._calculate_history_points(60)
                 assert result == 120  # 60 seconds * 1000ms / 500ms interval
+
+    @given(
+        history_secs=st.integers(min_value=1, max_value=3600),
+        interval_ms=st.integers(min_value=100, max_value=10000),
+    )
+    def test_calculate_history_points_properties(self, history_secs, interval_ms):
+        """Test history calculation mathematical properties."""
+        # Mock minimal app instance for the method
+        with patch("cpu_monitor.ui.main_window.CPUReader"):
+            with patch("tkinter.Tk.__init__", return_value=None):
+                app = CPUGraphApp.__new__(CPUGraphApp)
+                app.interval_ms = interval_ms
+
+                result = app._calculate_history_points(history_secs)
+
+                # Property: Result is always non-negative integer
+                assert isinstance(result, int)
+                assert result >= 0
+
+                # Property: Mathematical relationship holds
+                expected_points = (history_secs * 1000) // interval_ms
+                assert result == expected_points
+
+                # Property: Monotonic relationship when both calculations yield > 0
+                if history_secs > 1:
+                    smaller_result = app._calculate_history_points(history_secs - 1)
+                    # Only test monotonicity when both results are positive
+                    if smaller_result > 0 and result > 0:
+                        assert result >= smaller_result
+
+                # Property: For reasonable intervals, we get reasonable point counts
+                if interval_ms <= 1000:  # 1 second or faster updates
+                    assert (
+                        result >= 0
+                    )  # Could be 0 for very short history + slow updates
+
+                # Property: Very long history with fast updates gives many points
+                if history_secs >= 60 and interval_ms <= 500:
+                    assert result >= 100  # Should have substantial history
 
     def test_calculate_statistics_with_data(self):
         """Test statistics calculation with data."""
