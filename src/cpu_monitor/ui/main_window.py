@@ -236,7 +236,7 @@ class CPUGraphApp(tk.Tk):
         # In a production app, you might want to log this error
 
     def _update_loop(self) -> None:
-        """Main update loop - fetches CPU data and updates display."""
+        """Fetch CPU data and update display in main update loop."""
         try:
             if not self.is_paused:
                 # Get comprehensive CPU data

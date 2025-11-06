@@ -1,5 +1,5 @@
 """
-CPU Utilization Monitor
+CPU Utilization Monitor.
 
 Real-time CPU monitoring application with overall and per-core analysis.
 

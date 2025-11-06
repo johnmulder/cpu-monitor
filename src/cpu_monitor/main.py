@@ -1,5 +1,5 @@
 """
-CPU Monitor - Package Entry Point
+CPU Monitor - Package Entry Point.
 
 Main entry point for the CPU monitoring package.
 Provides the main() function used by console scripts.
@@ -10,12 +10,10 @@ from .ui import CPUGraphApp
 
 
 def main() -> int:
-    """Main entry point for the CPU monitoring application.
-
-    Parses command line arguments and launches the GUI application.
+    """Parse command line arguments and run the CPU monitor.
 
     Returns:
-        Exit code (0 for success, non-zero for error)
+        Exit code (0 for success, non-zero for error).
     """
     try:
         config = parse_arguments()
