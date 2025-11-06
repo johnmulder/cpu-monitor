@@ -90,10 +90,10 @@ def parse_arguments() -> AppConfig:
     )
 
 
-def _validate_arguments(
+def _validate_timing_args(
     parser: argparse.ArgumentParser, args: argparse.Namespace
 ) -> None:
-    """Validate parsed arguments and show helpful error messages.
+    """Validate timing-related arguments.
 
     Args:
         parser: The argument parser (for error reporting)
@@ -112,12 +112,55 @@ def _validate_arguments(
     if args.time_window > 3600:
         parser.error("Time window should not exceed 1 hour (3600 seconds)")
 
+
+def _validate_display_args(
+    parser: argparse.ArgumentParser, args: argparse.Namespace
+) -> None:
+    """Validate display-related arguments.
+
+    Args:
+        parser: The argument parser (for error reporting)
+        args: Parsed arguments
+
+    Raises:
+        SystemExit: If validation fails
+    """
     if args.width < 400:
         parser.error("Canvas width must be at least 400 pixels")
     if args.height < 200:
         parser.error("Canvas height must be at least 200 pixels")
 
+
+def _validate_core_args(
+    parser: argparse.ArgumentParser, args: argparse.Namespace
+) -> None:
+    """Validate core-related arguments.
+
+    Args:
+        parser: The argument parser (for error reporting)
+        args: Parsed arguments
+
+    Raises:
+        SystemExit: If validation fails
+    """
     if args.max_cores < 0:
         parser.error("Maximum cores must be 0 (all cores) or a positive number")
     if args.max_cores > 64:
         parser.error("Maximum cores display limit is 64 for performance reasons")
+
+
+def _validate_arguments(
+    parser: argparse.ArgumentParser, args: argparse.Namespace
+) -> None:
+    """Validate parsed arguments and show helpful error messages.
+
+    Args:
+        parser: The argument parser (for error reporting)
+        args: Parsed arguments
+
+    Raises:
+        SystemExit: If validation fails
+    """
+    _validate_timing_args(parser, args)
+    _validate_display_args(parser, args)
+    _validate_core_args(parser, args)
