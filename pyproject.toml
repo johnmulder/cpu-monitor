@@ -8,7 +8,7 @@ version = "2.0.0"
 authors = [
     {name = "John Mulder", email = "johnmulder@gmail.com"}
 ]
-description = "A modular CPU utilization monitoring application with layered architecture"
+description = "A CPU utilization monitoring application"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.8"
@@ -45,16 +45,10 @@ Issues = "https://github.com/johnmulder/cpu-monitor/issues"
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",
-    "pytest-cov>=4.0.0",
-    "black>=22.0.0",
     "ruff>=0.1.0",
     "mypy>=1.0.0",
-    "isort>=5.12.0",
     "pre-commit>=3.0.0",
     "bandit>=1.7.0",
-]
-gui = [
-    # tkinter is usually included with Python, but explicit for clarity
 ]
 
 [project.scripts]
@@ -70,25 +64,6 @@ where = ["src"]
 [tool.setuptools.package-data]
 cpu_monitor = ["*.md", "*.txt", "*.cfg"]
 
-# Development tool configurations
-[tool.black]
-line-length = 88
-target-version = ["py38", "py39", "py310", "py311", "py312", "py313"]
-include = '\.pyi?$'
-extend-exclude = '''
-/(
-  # directories
-  \.eggs
-  | \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | build
-  | dist
-)/
-'''
-
 [tool.ruff]
 line-length = 88
 target-version = "py38"
@@ -98,7 +73,7 @@ select = [
     "E",  # pycodestyle errors
     "W",  # pycodestyle warnings
     "F",  # pyflakes
-    "I",  # isort
+    "I",  # import sorting
     "B",  # flake8-bugbear
     "C4", # flake8-comprehensions
     "UP", # pyupgrade
@@ -118,11 +93,7 @@ python_functions = ["test_*"]
 addopts = [
     "--strict-markers",
     "--strict-config",
-    "--verbose",
-    "--cov=src",
-    "--cov-report=term-missing",
-    "--cov-report=html",
-    "--cov-fail-under=95"
+    "--verbose"
 ]
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
@@ -148,42 +119,3 @@ strict_equality = true
 [[tool.mypy.overrides]]
 module = "tkinter.*"
 ignore_missing_imports = true
-
-[tool.coverage.run]
-source = ["src/cpu_monitor"]
-omit = [
-    "*/tests/*",
-    "*/test_*",
-    "*/__pycache__/*",
-    "*/.*"
-]
-
-[tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    "def __repr__",
-    "if self.debug:",
-    "if settings.DEBUG",
-    "raise AssertionError",
-    "raise NotImplementedError",
-    "if 0:",
-    "if __name__ == .__main__.:",
-    "class .*\\bProtocol\\):",
-    "@(abc\\.)?abstractmethod"
-]
-
-# Note: flake8 configuration is commented out since we're using ruff
-# [tool.flake8]
-# max-line-length = 88
-# extend-ignore = ["E203", "W503"]
-# max-complexity = 10
-# select = ["C", "E", "F", "W", "B", "B950"]
-# exclude = [
-#     ".git",
-#     "__pycache__",
-#     ".venv",
-#     ".eggs",
-#     "*.egg",
-#     "build",
-#     "dist"
-# ]

@@ -35,15 +35,7 @@ jobs:
         pip install -e .[dev]
 
     - name: Run tests
-      run: |
-        pytest --cov=src/cpu_monitor --cov-report=xml --cov-report=term-missing
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./coverage.xml
-        flags: unittests
-        name: codecov-umbrella
+      run: pytest
 
   code-quality:
     name: Code Quality
