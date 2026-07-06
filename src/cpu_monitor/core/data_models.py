@@ -44,8 +44,3 @@ class CPUCoreData:
     def has_per_core_data(self) -> bool:
         """Check if valid per-core data is available."""
         return bool(self.per_core) and self.core_count > 0
-
-    @property
-    def effective_core_count(self) -> int:
-        """Get the actual number of cores with data."""
-        return len(self.per_core) if self.per_core else 0
