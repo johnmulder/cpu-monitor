@@ -5,7 +5,6 @@ from unittest.mock import patch
 import pytest
 
 from cpu_monitor.cli.argument_parser import parse_arguments
-from cpu_monitor.config.settings import AppConfig
 
 
 class TestArgumentParsing:
@@ -16,11 +15,8 @@ class TestArgumentParsing:
         with patch("sys.argv", ["cpu-monitor"]):
             config = parse_arguments()
 
-        assert isinstance(config, AppConfig)
         assert config.interval_ms == 500  # Default
         assert config.history_secs == 60  # Default
-        assert config.canvas_width == 900  # Default
-        assert config.canvas_height == 345  # Default
         assert config.show_per_core is False  # Default
         assert config.max_cores_display == 0  # Default
 
@@ -54,10 +50,6 @@ class TestArgumentParsing:
             "250",
             "--time-window",
             "180",
-            "--width",
-            "1200",
-            "--height",
-            "600",
             "--per-core",
             "--max-cores",
             "8",
@@ -68,8 +60,6 @@ class TestArgumentParsing:
 
             assert config.interval_ms == 250
             assert config.history_secs == 180
-            assert config.canvas_width == 1200
-            assert config.canvas_height == 600
             assert config.show_per_core is True
             assert config.max_cores_display == 8
 
@@ -110,16 +100,6 @@ class TestArgumentValidation:
             parse_arguments()
 
         with patch("sys.argv", ["cpu-monitor", "-t", "3700"]), pytest.raises(
-            SystemExit
-        ):
-            parse_arguments()
-
-        with patch("sys.argv", ["cpu-monitor", "--width", "0"]), pytest.raises(
-            SystemExit
-        ):
-            parse_arguments()
-
-        with patch("sys.argv", ["cpu-monitor", "--height", "150"]), pytest.raises(
             SystemExit
         ):
             parse_arguments()

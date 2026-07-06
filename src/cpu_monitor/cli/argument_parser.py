@@ -6,14 +6,12 @@ Provides CLI interface for configuring the CPU monitoring application.
 
 import argparse
 
-from ..config.settings import AppConfig
 
-
-def parse_arguments() -> AppConfig:
+def parse_arguments() -> argparse.Namespace:
     """Parse command line arguments and return validated configuration.
 
     Returns:
-        AppConfig: Validated configuration object
+        argparse.Namespace: Validated configuration values
 
     Raises:
         SystemExit: If arguments are invalid or help is requested
@@ -30,6 +28,7 @@ def parse_arguments() -> AppConfig:
     parser.add_argument(
         "-i",
         "--interval",
+        dest="interval_ms",
         type=int,
         default=500,
         metavar="MS",
@@ -39,6 +38,7 @@ def parse_arguments() -> AppConfig:
     parser.add_argument(
         "-t",
         "--time-window",
+        dest="history_secs",
         type=int,
         default=60,
         metavar="SECONDS",
@@ -46,30 +46,15 @@ def parse_arguments() -> AppConfig:
     )
 
     parser.add_argument(
-        "-w",
-        "--width",
-        type=int,
-        default=900,
-        metavar="PIXELS",
-        help="Canvas width in pixels",
-    )
-
-    parser.add_argument(
-        "--height",
-        type=int,
-        default=345,
-        metavar="PIXELS",
-        help="Canvas height in pixels",
-    )
-
-    parser.add_argument(
         "--per-core",
+        dest="show_per_core",
         action="store_true",
         help="Start in per-core view mode (can be toggled during runtime)",
     )
 
     parser.add_argument(
         "--max-cores",
+        dest="max_cores_display",
         type=int,
         default=0,
         metavar="N",
@@ -79,15 +64,7 @@ def parse_arguments() -> AppConfig:
     args = parser.parse_args()
 
     _validate_arguments(parser, args)
-
-    return AppConfig(
-        interval_ms=args.interval,
-        history_secs=args.time_window,
-        canvas_width=args.width,
-        canvas_height=args.height,
-        show_per_core=args.per_core,
-        max_cores_display=args.max_cores,
-    )
+    return args
 
 
 def _validate_timing_args(
@@ -102,33 +79,15 @@ def _validate_timing_args(
     Raises:
         SystemExit: If validation fails
     """
-    if args.interval < 100:
+    if args.interval_ms < 100:
         parser.error("Update interval must be at least 100ms for responsive UI")
-    if args.interval > 10000:
+    if args.interval_ms > 10000:
         parser.error("Update interval should not exceed 10 seconds")
 
-    if args.time_window < 10:
+    if args.history_secs < 10:
         parser.error("Time window must be at least 10 seconds")
-    if args.time_window > 3600:
+    if args.history_secs > 3600:
         parser.error("Time window should not exceed 1 hour (3600 seconds)")
-
-
-def _validate_display_args(
-    parser: argparse.ArgumentParser, args: argparse.Namespace
-) -> None:
-    """Validate display-related arguments.
-
-    Args:
-        parser: The argument parser (for error reporting)
-        args: Parsed arguments
-
-    Raises:
-        SystemExit: If validation fails
-    """
-    if args.width < 400:
-        parser.error("Canvas width must be at least 400 pixels")
-    if args.height < 200:
-        parser.error("Canvas height must be at least 200 pixels")
 
 
 def _validate_core_args(
@@ -143,9 +102,9 @@ def _validate_core_args(
     Raises:
         SystemExit: If validation fails
     """
-    if args.max_cores < 0:
+    if args.max_cores_display < 0:
         parser.error("Maximum cores must be 0 (all cores) or a positive number")
-    if args.max_cores > 64:
+    if args.max_cores_display > 64:
         parser.error("Maximum cores display limit is 64 for performance reasons")
 
 
@@ -162,5 +121,4 @@ def _validate_arguments(
         SystemExit: If validation fails
     """
     _validate_timing_args(parser, args)
-    _validate_display_args(parser, args)
     _validate_core_args(parser, args)

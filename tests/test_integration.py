@@ -10,31 +10,17 @@ from unittest.mock import patch
 import pytest
 
 from cpu_monitor.cli.argument_parser import parse_arguments
-from cpu_monitor.config.settings import AppConfig
 from cpu_monitor.core.cpu_reader import CPUReader
 
 
 class TestApplicationIntegration:
     """Integration tests for core application functionality."""
 
-    def test_config_creation_and_usage(self):
-        """Test that configuration objects work with real values."""
-        config = AppConfig(
-            interval_ms=1000, history_secs=120, show_per_core=True, max_cores_display=4
-        )
-
-        assert config.interval_ms == 1000
-        assert config.history_secs == 120
-        assert config.show_per_core is True
-        assert config.max_cores_display == 4
-
     def test_cli_to_config_pipeline(self):
         """Test CLI argument parsing creates valid config."""
         with patch("sys.argv", ["cpu-monitor", "--per-core", "--max-cores", "8"]):
             config = parse_arguments()
 
-            # Should create a valid AppConfig
-            assert isinstance(config, AppConfig)
             assert config.show_per_core is True
             assert config.max_cores_display == 8
 
@@ -62,19 +48,6 @@ class TestApplicationIntegration:
         except Exception as e:
             # If CPU monitoring fails, that's acceptable for testing
             pytest.skip(f"CPU monitoring not available: {e}")
-
-    def test_package_imports(self):
-        """Test that all package imports work correctly."""
-        # Should be able to import all main components
-        from cpu_monitor import AppConfig, CPUReader, parse_arguments
-        from cpu_monitor.ui import ChartColors, ChartRenderer
-
-        # All imports should succeed
-        assert AppConfig is not None
-        assert CPUReader is not None
-        assert parse_arguments is not None
-        assert ChartColors is not None
-        assert ChartRenderer is not None
 
     def test_color_palette_consistency(self):
         """Test that color palette works correctly."""

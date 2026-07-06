@@ -5,8 +5,8 @@ Main entry point for the CPU monitoring package.
 Provides the main() function used by console scripts.
 """
 
-from .cli import parse_arguments
-from .ui import CPUGraphApp
+from .cli.argument_parser import parse_arguments
+from .ui.main_window import CPUGraphApp
 
 
 def main() -> int:

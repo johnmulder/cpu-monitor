@@ -10,10 +10,20 @@ import tkinter as tk
 from collections import deque
 from typing import Deque, List
 
-from ..config.settings import UIConfig
-from ..core import CPUReader, CPUStatistics
+from ..core.cpu_reader import CPUReader
+from ..core.data_models import CPUStatistics
 from .chart_renderer import ChartRenderer
 from .colors import ChartColors
+
+DEFAULT_CANVAS_SIZE = (900, 345)
+WINDOW_TITLE = "CPU Utilization Monitor"
+INITIAL_STATUS_MESSAGE = "Initializing CPU monitor..."
+BUTTON_PAUSE = "Pause"
+BUTTON_RESUME = "Resume"
+BUTTON_CLEAR = "Clear"
+BUTTON_QUIT = "Quit"
+BUTTON_PER_CORE = "Per-Core"
+BUTTON_OVERALL = "Overall"
 
 
 class CPUGraphApp(tk.Tk):
@@ -58,7 +68,7 @@ class CPUGraphApp(tk.Tk):
 
     def _setup_window(self) -> None:
         """Configure the main window properties."""
-        self.title(UIConfig.WINDOW_TITLE)
+        self.title(WINDOW_TITLE)
         self.resizable(False, False)
 
     def _calculate_history_points(self, history_secs: int) -> int:
@@ -95,12 +105,12 @@ class CPUGraphApp(tk.Tk):
         self._create_control_buttons(main_frame)
 
         # Initialize chart renderer
-        canvas_width, canvas_height = UIConfig.DEFAULT_CANVAS_SIZE
+        canvas_width, canvas_height = DEFAULT_CANVAS_SIZE
         self.chart_renderer = ChartRenderer(self.canvas, canvas_width, canvas_height)
 
     def _create_canvas(self, parent: tk.Widget) -> None:
         """Create the main drawing canvas."""
-        canvas_width, canvas_height = UIConfig.DEFAULT_CANVAS_SIZE
+        canvas_width, canvas_height = DEFAULT_CANVAS_SIZE
         self.canvas = tk.Canvas(
             parent,
             width=canvas_width,
@@ -113,7 +123,7 @@ class CPUGraphApp(tk.Tk):
     def _create_status_label(self, parent: tk.Widget) -> None:
         """Create the status information label that shows CPU statistics."""
         self.status_label = tk.Label(
-            parent, text=UIConfig.INITIAL_STATUS_MESSAGE, font=("TkDefaultFont", 10)
+            parent, text=INITIAL_STATUS_MESSAGE, font=("TkDefaultFont", 10)
         )
         self.status_label.grid(row=1, column=0, sticky="w", pady=(6, 0))
 
@@ -121,18 +131,14 @@ class CPUGraphApp(tk.Tk):
         """Create control buttons (Pause, Clear, Toggle View, Quit)."""
         # Define button configurations
         buttons = [
-            (UIConfig.BUTTON_PAUSE, self._toggle_pause, 1),
-            (UIConfig.BUTTON_CLEAR, self._clear_data, 2),
+            (BUTTON_PAUSE, self._toggle_pause, 1),
+            (BUTTON_CLEAR, self._clear_data, 2),
             (
-                (
-                    UIConfig.BUTTON_PER_CORE
-                    if not self.show_per_core
-                    else UIConfig.BUTTON_OVERALL
-                ),
+                (BUTTON_PER_CORE if not self.show_per_core else BUTTON_OVERALL),
                 self._toggle_view,
                 3,
             ),
-            (UIConfig.BUTTON_QUIT, self.destroy, 4),
+            (BUTTON_QUIT, self.destroy, 4),
         ]
 
         for text, command, column in buttons:
@@ -152,9 +158,7 @@ class CPUGraphApp(tk.Tk):
     def _toggle_pause(self) -> None:
         """Toggle between paused and running states."""
         self.is_paused = not self.is_paused
-        button_text = (
-            UIConfig.BUTTON_RESUME if self.is_paused else UIConfig.BUTTON_PAUSE
-        )
+        button_text = BUTTON_RESUME if self.is_paused else BUTTON_PAUSE
         self.pause_button.config(text=button_text)
 
     def _toggle_view(self) -> None:
@@ -166,9 +170,7 @@ class CPUGraphApp(tk.Tk):
             self._initialize_per_core_data()
 
         # Update button text
-        view_text = (
-            UIConfig.BUTTON_OVERALL if self.show_per_core else UIConfig.BUTTON_PER_CORE
-        )
+        view_text = BUTTON_OVERALL if self.show_per_core else BUTTON_PER_CORE
         self.view_button.config(text=view_text)
 
         # Refresh the chart immediately
