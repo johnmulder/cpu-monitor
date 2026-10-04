@@ -2,7 +2,7 @@
 
 # Audit Cleanup Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** Use the repository's current source, configuration, and checks. External workflow skills are optional. Reconcile each task with current files before implementing it; checkboxes may describe work already present.
 
 **Goal:** Remove the over-engineering found in the ponytail audit while keeping the CPU monitor working.
 

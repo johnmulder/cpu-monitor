@@ -63,13 +63,28 @@ cpu-monitor --per-core --max-cores 4 --time-window 120
 
 ## Development
 
+After explicit development setup, use the existing environment for check-only
+verification:
+
 ```bash
 pytest
 ruff check src tests
-ruff format src tests
+ruff format --check src tests
 mypy src
+```
+
+Formatting repair and hooks are separate operations:
+
+```bash
+ruff format src tests
 pre-commit run --all-files
 ```
+
+Hooks may fix source or Markdown and install missing type packages. Preserve
+their security and documentation checks, inspect any resulting diff, and rerun
+verification after repairs. CI runs these hooks separately from pytest. Its
+Bandit report in the build/security job is advisory (`|| true`); this does not
+replace the required local Bandit hook or the other security checks.
 
 ## Project Structure
 
