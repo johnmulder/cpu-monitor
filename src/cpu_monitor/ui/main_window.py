@@ -247,8 +247,8 @@ class CPUGraphApp(tk.Tk):
                 # Update overall data
                 self.data.append(cpu_data.overall)
 
-                # Update per-core data if available and needed
-                if self.show_per_core and cpu_data.has_per_core_data:
+                # Keep both histories current across view switches.
+                if cpu_data.has_per_core_data:
                     cores_to_update = min(
                         len(self.per_core_data), len(cpu_data.per_core)
                     )

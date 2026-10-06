@@ -550,13 +550,14 @@ class TestCPUGraphApp:
                 assert len(app.per_core_data) == 4
                 assert app.max_cores_display == 4
 
-    def test_update_loop_normal_operation(self):
+    @pytest.mark.parametrize("show_per_core", [False, True])
+    def test_update_loop_normal_operation(self, show_per_core):
         """Test normal update loop operation."""
         with patch("cpu_monitor.ui.main_window.CPUReader"):
             with patch("tkinter.Tk.__init__", return_value=None):
                 app = CPUGraphApp.__new__(CPUGraphApp)
                 app.is_paused = False
-                app.show_per_core = True
+                app.show_per_core = show_per_core
                 app.per_core_data = [deque() for _ in range(4)]
                 app.data = deque()
                 app.interval_ms = 500
