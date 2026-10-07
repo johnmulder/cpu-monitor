@@ -82,9 +82,16 @@ pre-commit run --all-files
 
 Hooks may fix source or Markdown and install missing type packages. Preserve
 their security and documentation checks, inspect any resulting diff, and rerun
-verification after repairs. CI runs these hooks separately from pytest. Its
-Bandit report in the build/security job is advisory (`|| true`); this does not
-replace the required local Bandit hook or the other security checks.
+verification after repairs. CI runs these hooks separately from pytest.
+
+The build/security job audits the complete installed development, build and
+scanner inventory with `pip-audit`, then builds with that checked toolchain. It
+also installs the wheel in a separate runtime-only environment, checks the CLI,
+and audits that environment's inventory. The project's own package is excluded
+from dependency inventories because its source is checked by Bandit. Both
+dependency audits and Bandit must pass; reports and inventories are retained
+even on failure. Security tooling runs on Python 3.13 without changing the
+application's Python 3.8 support or its test matrix.
 
 ## Project Structure
 
