@@ -3,6 +3,8 @@
 import sys
 from unittest.mock import Mock, patch
 
+import pytest
+
 from cpu_monitor.main import main
 
 
@@ -36,14 +38,22 @@ class TestMainFunction:
         )
         mock_app.mainloop.assert_called_once()
 
+    @pytest.mark.parametrize(
+        ("exit_code", "expected"),
+        [(0, 0), (2, 2), (None, 0), ("Argument parsing failed", 1)],
+    )
     @patch("cpu_monitor.main.parse_arguments")
-    def test_argument_parsing_system_exit(self, mock_parse):
-        """Test SystemExit handling (--help, etc.)."""
-        mock_parse.side_effect = SystemExit(0)
+    @patch("cpu_monitor.main.CPUGraphApp")
+    def test_argument_parsing_system_exit(
+        self, mock_app_class, mock_parse, exit_code, expected
+    ):
+        """Preserve parser exit status without starting the application."""
+        mock_parse.side_effect = SystemExit(exit_code)
 
         result = main()
 
-        assert result == 0
+        assert result == expected
+        mock_app_class.assert_not_called()
 
     @patch("cpu_monitor.main.parse_arguments")
     def test_argument_parsing_exception(self, mock_parse):

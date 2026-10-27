@@ -61,6 +61,9 @@ cpu-monitor --per-core --max-cores 4 --time-window 120
 | `--per-core` | Start in per-core view | False |
 | `--max-cores` | Max cores to display, 0 means all | 0 |
 
+`--help` exits with status 0. Invalid values and unknown arguments print a
+diagnostic to stderr and exit with status 2.
+
 ## Development
 
 After explicit development setup, use the existing environment for check-only

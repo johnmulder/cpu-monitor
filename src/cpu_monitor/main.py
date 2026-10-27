@@ -17,8 +17,10 @@ def main() -> int:
     """
     try:
         config = parse_arguments()
-    except SystemExit:
-        return 0
+    except SystemExit as exc:
+        if exc.code is None:
+            return 0
+        return exc.code if isinstance(exc.code, int) else 1
     except Exception as e:
         print(f"[ERROR] Argument parsing failed: {e}")
         return 1
