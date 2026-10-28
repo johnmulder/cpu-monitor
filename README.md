@@ -13,6 +13,10 @@ Real-time CPU usage monitor with per-core charts and a Tkinter interface.
 - Pause, clear, view toggle, and quit controls
 - Cross-platform CPU readings through `psutil`
 
+The average uses actual CPU readings within the history window. Startup and
+Clear padding keep the chart width fixed and do not count as idle CPU readings.
+Clear starts a new set of observations.
+
 ## Screenshots
 
 ### Overall CPU Usage View

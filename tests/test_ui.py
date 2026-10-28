@@ -321,6 +321,72 @@ class TestCPUGraphApp:
         )
         return mock
 
+    @pytest.fixture
+    def monitoring_app(self, monkeypatch):
+        monkeypatch.setattr(tk.Tk, "__init__", lambda self: None)
+        for method in ("_setup_window", "_create_ui_components", "_start_update_loop"):
+            monkeypatch.setattr(CPUGraphApp, method, Mock())
+        reader = Mock()
+        reader.get_core_count.return_value = 2
+        monkeypatch.setattr("cpu_monitor.ui.main_window.CPUReader", lambda: reader)
+        app = CPUGraphApp(show_per_core=True)
+        app.after = Mock()
+        app.status_label = Mock()
+        app.chart_renderer = Mock()
+        return app
+
+    def test_observed_average_excludes_padding_and_counts_real_zero(
+        self, monitoring_app
+    ):
+        app = monitoring_app
+        for value, expected_average in ((50.0, 50.0), (0.0, 25.0)):
+            app.cpu_reader.get_cpu_data.return_value = CPUCoreData(
+                overall=value, per_core=[value, value], core_count=2
+            )
+            app._update_loop()
+
+            stats = app._calculate_statistics()
+            assert stats.current == value
+            assert stats.average == expected_average
+            assert stats.maximum == 50.0
+            assert (
+                f"Avg: {expected_average:5.1f}%"
+                in (app.status_label.config.call_args.kwargs["text"])
+            )
+            chart_data = app.chart_renderer.render_complete_chart.call_args.kwargs
+            assert len(chart_data["overall_data"]) == 120
+            assert all(len(core) == 120 for core in chart_data["per_core_data"])
+
+    def test_clear_restarts_observed_average(self, monitoring_app):
+        app = monitoring_app
+        app.cpu_reader.get_cpu_data.return_value = CPUCoreData(
+            overall=50.0, per_core=[50.0, 50.0], core_count=2
+        )
+        app._update_loop()
+
+        app._clear_data()
+        assert app._calculate_statistics() == CPUStatistics(0.0, 0.0, 0.0)
+        assert list(app.data) == [0.0] * 120
+        assert all(list(core) == [0.0] * 120 for core in app.per_core_data)
+
+        app.cpu_reader.get_cpu_data.return_value = CPUCoreData(
+            overall=80.0, per_core=[80.0, 80.0], core_count=2
+        )
+        app._update_loop()
+        assert app._calculate_statistics() == CPUStatistics(80.0, 80.0, 80.0)
+
+    def test_observed_average_uses_only_retained_window(self, monitoring_app):
+        app = monitoring_app
+        for value in [90.0] + [20.0] * 120:
+            app.cpu_reader.get_cpu_data.return_value = CPUCoreData(
+                overall=value, per_core=[value, value], core_count=2
+            )
+            app._update_loop()
+
+        assert len(app.data) == 120
+        assert app._calculate_statistics() == CPUStatistics(20.0, 20.0, 20.0)
+        assert all(list(core) == [20.0] * 120 for core in app.per_core_data)
+
     def test_calculate_history_points(self):
         """Test history points calculation."""
         # Test the method in isolation without creating the full app
@@ -353,6 +419,7 @@ class TestCPUGraphApp:
             with patch("tkinter.Tk.__init__", return_value=None):
                 app = CPUGraphApp.__new__(CPUGraphApp)
                 app.data = deque([10.0, 20.0, 30.0, 40.0, 50.0])
+                app.sample_count = 5
 
                 stats = app._calculate_statistics()
 
@@ -367,6 +434,7 @@ class TestCPUGraphApp:
             with patch("tkinter.Tk.__init__", return_value=None):
                 app = CPUGraphApp.__new__(CPUGraphApp)
                 app.data = deque()
+                app.sample_count = 0
 
                 stats = app._calculate_statistics()
 
@@ -409,6 +477,7 @@ class TestCPUGraphApp:
 
                 # Add some data
                 app.data = deque([10.0, 20.0, 30.0])
+                app.sample_count = 3
                 app.per_core_data = [deque([5.0, 15.0, 25.0]) for _ in range(2)]
 
                 # Mock the refresh chart method
@@ -419,6 +488,7 @@ class TestCPUGraphApp:
                 # Check that data is cleared and filled with zeros
                 assert len(app.data) == 10
                 assert all(x == 0.0 for x in app.data)
+                assert app.sample_count == 0
                 assert all(len(core_data) == 10 for core_data in app.per_core_data)
                 assert all(
                     all(x == 0.0 for x in core_data) for core_data in app.per_core_data
@@ -560,6 +630,8 @@ class TestCPUGraphApp:
                 app.show_per_core = show_per_core
                 app.per_core_data = [deque() for _ in range(4)]
                 app.data = deque()
+                app.sample_count = 0
+                app.history_points = 120
                 app.interval_ms = 500
 
                 # Mock dependencies
@@ -578,6 +650,7 @@ class TestCPUGraphApp:
 
                     # Check that data was added
                     assert app.data[-1] == 45.0
+                    assert app.sample_count == 1
                     assert app.per_core_data[0][-1] == 25.0
                     assert app.per_core_data[1][-1] == 35.0
 

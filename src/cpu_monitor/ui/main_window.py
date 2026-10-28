@@ -56,6 +56,7 @@ class CPUGraphApp(tk.Tk):
         self.max_cores_display = max_cores
 
         self.data = deque([0.0] * self.history_points, maxlen=self.history_points)
+        self.sample_count = 0
         self.per_core_data: List[Deque[float]] = []  # List of deques, one per core
         self.cpu_reader = CPUReader()
 
@@ -184,6 +185,7 @@ class CPUGraphApp(tk.Tk):
     def _clear_data(self) -> None:
         """Clear all historical data and refresh the display."""
         self._reset_data_container(self.data)
+        self.sample_count = 0
 
         # Clear per-core data as well
         for core_data in self.per_core_data:
@@ -193,10 +195,10 @@ class CPUGraphApp(tk.Tk):
 
     def _calculate_statistics(self) -> CPUStatistics:
         """Calculate current CPU usage statistics."""
-        if not self.data:
+        if not self.data or self.sample_count == 0:
             return CPUStatistics(0.0, 0.0, 0.0)
 
-        data_list = list(self.data)
+        data_list = list(self.data)[-self.sample_count :]
         current = data_list[-1] if data_list else 0.0
         average = sum(data_list) / len(data_list)
         maximum = max(data_list)
@@ -246,6 +248,7 @@ class CPUGraphApp(tk.Tk):
 
                 # Update overall data
                 self.data.append(cpu_data.overall)
+                self.sample_count = min(self.sample_count + 1, self.history_points)
 
                 # Keep both histories current across view switches.
                 if cpu_data.has_per_core_data:
